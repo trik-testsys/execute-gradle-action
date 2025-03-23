@@ -1,0 +1,52 @@
+name: Execute Gradle
+author: Roman Shishkin
+description: Executes Gradle commands
+branding:
+  icon: 'package'
+  color: 'blue'
+
+inputs:
+  distribution:
+    description: 'The distribution of Java to use'
+    required: false
+    default: 'adopt-openj9'
+  java-version:
+    description: 'The version of Java to use'
+    required: false
+    default: '17'
+  architecture:
+    description: 'The architecture of the Java version'
+    required: false
+    default: 'x64'
+  gradle-commands:
+    description: 'The Gradle commands to run'
+    required: false
+    default: 'build test'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Setup Java
+      uses: actions/setup-java@v4
+      with:
+        distribution: '${{ inputs.distribution }}'
+        java-version: '${{ inputs.java-version }}'
+        architecture: '${{ inputs.architecture }}'
+
+    - name: Cache Gradle packages
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/.gradle/caches
+          ~/.gradle/wrapper
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+        restore-keys: |
+          ${{ runner.os }}-gradle
+
+    - name: Execute Gradle commands
+      shell: bash
+      run: ./scripts/execute-gradle.sh ${{ inputs.gradle-commands }}
+
+    - name: Cleanup Gradle Cache
+      shell: bash
+      run: ./scripts/cleanup-gradle-cache.sh
