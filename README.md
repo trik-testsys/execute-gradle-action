@@ -20,7 +20,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Execute Gradle
-        uses: trik-testsys/execute-gradle-action@v1
+        uses: trik-testsys/execute-gradle-action@v1.0.0
         with:
           distribution: 'adopt-openj9'
           java-version: '17'
