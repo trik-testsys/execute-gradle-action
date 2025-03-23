@@ -45,8 +45,10 @@ runs:
 
     - name: Execute Gradle commands
       shell: bash
-      run: ./scripts/execute-gradle.sh ${{ inputs.gradle-commands }}
+      run: ./gradlew ${{ inputs.gradle-commands }}
 
     - name: Cleanup Gradle Cache
       shell: bash
-      run: ./scripts/cleanup-gradle-cache.sh
+      run: |
+        rm -f ~/.gradle/caches/modules-2/modules-2.lock
+        rm -f ~/.gradle/caches/modules-2/gc.properties
